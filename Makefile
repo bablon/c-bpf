@@ -42,8 +42,10 @@ ifdef CROSS_COMPILE
 CLANG_ARCH_ARGS = --target=$(notdir $(CROSS_COMPILE:%-=%))
 endif
 
+kernver=$(shell uname -r | cut -f 1-2 -d '.')
+
 bpf_helper_defs.h: $(KSRC)/include/uapi/linux/bpf.h
-	scripts/bpf_helpers_doc.py --header --file $< > $@
+	scripts/bpf_doc-$(kernver).py --header --file $< > $@
 
 %_kern.o : %_kern.c bpf_helper_defs.h
 	clang $(NOSTDINC_FLAGS) $(KLINUXINCLUDE) $(BPF_EXTRA_CFLAGS) -I. \
